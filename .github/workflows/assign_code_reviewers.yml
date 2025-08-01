@@ -37,7 +37,7 @@ jobs:
           echo "reviewer=$reviewer" >> $GITHUB_OUTPUT
       - name: Assign code reviewers
         if: steps.params.outputs.reviewer != ''
-        run: gh pr edit ${{ steps.params.outputs.pr_number }} --add-reviewer ${{ steps.params.outputs.reviewer }}
+        run: gh pr edit ${{ steps.params.outputs.pr_number }} --remove-label "Readme" --add-assignee ${{ steps.params.outputs.reviewer }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
