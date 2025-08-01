@@ -5,7 +5,7 @@ on:
 
   # Events are suppressed in the workflow, so we need to run this workflow after the labeler completes.
   workflow_run:
-    workflows: ['[SERV] Pull Request Labeler']
+    workflows: [Labeler]
     types: [completed]
 
 jobs:
