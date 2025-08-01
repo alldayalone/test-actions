@@ -1,9 +1,7 @@
 name: Labeler
 on:
   - pull_request_target
-permissions:
-  contents: read
-  pull-requests: write
+
 jobs:
   triage:
     permissions:
@@ -20,6 +18,8 @@ jobs:
           sync-labels: true
 
   assign_reviewers:
+    permissions:
+      pull-requests: write
     needs: triage
     uses: ./.github/workflows/assign_code_reviewers.yml
     with:
