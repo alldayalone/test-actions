@@ -1,0 +1,17 @@
+name: '[SERV] Pull Request Labeler'
+on:
+  - pull_request_target
+jobs:
+  triage:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    outputs:
+      all-labels: ${{ steps.labeler.outputs.all-labels }}
+      pr-number: ${{ github.event.pull_request.number }}
+    steps:
+      - id: labeler
+        uses: actions/labeler@v5
+        with:
+          sync-labels: true

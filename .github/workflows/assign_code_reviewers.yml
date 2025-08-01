@@ -1,0 +1,39 @@
+name: '[SERV] Assign Code Reviewers'
+on:
+  pull_request:
+    types: [labeled, unlabeled]
+
+  # Events are suppressed in the workflow, so we need to run this workflow after the labeler completes.
+  workflow_run:
+    workflows: ['[SERV] Pull Request Labeler']
+    types: [completed]
+
+jobs:
+  assign:
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - id: params
+        name: Set PR number and reviewer
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            pr_number="${{ github.event.pull_request.number }}"
+            labels="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          else
+            pr_number="${{ github.event.workflow_run.outputs.pr-number }}"
+            labels="${{ github.event.workflow_run.outputs.all-labels }}"
+          fi
+          reviewer=""
+          if [[ "$labels" == *"Readme"* ]]; then
+            reviewer="AllDayAlone"
+          fi
+          echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
+          echo "reviewer=$reviewer" >> $GITHUB_OUTPUT
+      - name: Assign code reviewers
+        if: steps.params.outputs.reviewer != ''
+        run: gh pr edit ${{ steps.params.outputs.pr_number }} --add-reviewer ${{ steps.params.outputs.reviewer }}
+
