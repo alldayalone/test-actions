@@ -1,4 +1,4 @@
-name: '[SERV] Pull Request Labeler'
+name: Labeler
 on:
   - pull_request_target
 jobs:
@@ -15,3 +15,10 @@ jobs:
         uses: actions/labeler@v5
         with:
           sync-labels: true
+
+  assign_reviewers:
+    needs: triage
+    uses: ./.github/workflows/assign_code_reviewers.yml
+    with:
+      pr_number: ${{ needs.triage.outputs.pr-number }}
+      labels: ${{ needs.triage.outputs.all-labels }}
