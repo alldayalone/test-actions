@@ -1,7 +1,7 @@
 name: '[SERV] Assign Code Reviewers'
 on:
   pull_request:
-    types: [labeled, unlabeled]
+    types: [labeled]
 
   # Events are suppressed in the workflow, so we need to run this workflow after the labeler completes.
   workflow_run:
@@ -36,4 +36,6 @@ jobs:
       - name: Assign code reviewers
         if: steps.params.outputs.reviewer != ''
         run: gh pr edit ${{ steps.params.outputs.pr_number }} --add-reviewer ${{ steps.params.outputs.reviewer }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
