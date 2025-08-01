@@ -17,6 +17,8 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4 
       - id: params
         name: Set PR number and reviewer
         run: |
