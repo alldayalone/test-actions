@@ -23,8 +23,14 @@ jobs:
       - id: params
         name: Set PR number and reviewer
         run: |
-          pr_number="${{ inputs.pr_number }}"
-          labels="${{ inputs.labels }}"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            pr_number="${{ github.event.pull_request.number }}"
+            labels="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          else
+            pr_number="${{ inputs.pr_number }}"
+            labels="${{ inputs.labels }}"
+          fi
+          
           reviewer=""
           if [[ "$labels" == *"Readme"* ]]; then
             reviewer="alldayalone"
